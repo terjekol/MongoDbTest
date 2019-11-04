@@ -1,26 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MongoDbTest.Models;
+using MongoDbTest.Services;
 
 namespace MongoDbTest.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private DocumentService _documentService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(DocumentService documentService)
         {
-            _logger = logger;
+            _documentService = documentService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var databasesAndCollections = await _documentService.GetDatabasesAndCollections();
+            return View(databasesAndCollections);
         }
 
         public IActionResult Privacy()
