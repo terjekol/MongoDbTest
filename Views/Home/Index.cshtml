@@ -1,12 +1,32 @@
-﻿@model Dictionary<string, List<string>>
-
-@foreach (var databaseName in Model.Keys)
-{
-    <h3>@databaseName</h3>
-    <ul>
-        @foreach (var collectionName in Model[databaseName])
+﻿@model ExplorerDbViewModel
+<div style="display: flex">
+    <div>
+        @foreach (var databaseName in Model.DatabasesAndCollections.Keys)
         {
-            <li>@collectionName</li>
+            <span>Collections in database <b>@databaseName</b>:</span><br />
+            <ul>
+                @foreach (var collectionName in Model.DatabasesAndCollections[databaseName])
+                {
+                    <li>
+                        <a asp-route-selectedDatabase="@databaseName"
+                           asp-route-selectedCollection="@collectionName">@collectionName</a>
+                    </li>
+                }
+            </ul>
         }
-    </ul>
-}
+    </div>
+    <div>
+        @if (@Model.SelectedCollection == null)
+        {
+            <span style="color: green; font-style: italic">Select a collection in one of the databases to the left.</span>
+        }
+        else
+        {
+            <span>You selected @Model.SelectedCollection in @Model.SelectedDatabase</span>
+            @foreach (var doc in Model.Documents)
+             {
+                 <li>@doc.ToString()</li>
+             }
+        }
+    </div>
+</div>

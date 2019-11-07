@@ -8,10 +8,9 @@ namespace MongoDbTest.Models
 {
     public class ExplorerDbViewModel
     {
-        public string[] DatabaseNames { get; set; }
         public string SelectedDatabase { get; set; }
-        public string[] CollectionNames { get; set; }
         public string SelectedCollection{ get; set; }
         public List<BsonDocument> Documents { get; set; }
+        public Dictionary<string, List<string>> DatabasesAndCollections { get; set; }
     }
 }
