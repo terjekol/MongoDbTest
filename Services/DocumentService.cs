@@ -62,14 +62,9 @@ namespace MongoDbTest.Services
             var db = _client.GetDatabase(databaseName);
             var collection = db.GetCollection<BsonDocument>(collectionName);
             var list = new List<BsonDocument>();
-            await collection.Find(doc => true).ForEachAsync(
-                doc=>list.Add(doc)
-                );
+            var result = await collection.FindAsync(doc => true);
+            await result.ForEachAsync(doc => list.Add(doc));
             return list;
-            //await result.ForEachAsync(doc => list.Add(doc));
-            //var result = await collection.FindAsync(doc => true);
-            //await result.ForEachAsync(doc => list.Add(doc));
-            //return list;
         }
     }
 }
