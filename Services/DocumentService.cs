@@ -81,15 +81,23 @@ namespace MongoDbTest.Services
             return db.GetCollection<BsonDocument>(collectionName);
         }
 
-        public async Task CreateOrUpdate(string database, string collection, string id, string fieldName, string value)
-        {
-            
-        }
-
-        public async Task Delete(string databaseName, string collectionName, string id)
+        public async Task<UpdateResult> CreateOrUpdate(string databaseName, string collectionName, string id, string fieldName, string value)
         {
             var collection = GetCollection(databaseName, collectionName);
-            await collection.DeleteOneAsync(doc => doc["_id"] == id);
+            var update = Builders<BsonDocument>.Update.Set(fieldName, new BsonString(value));
+            return await collection.UpdateOneAsync(CreateIdFilter(id), update);
+
+        }
+
+        public async Task<DeleteResult> Delete(string databaseName, string collectionName, string id)
+        {
+            var collection = GetCollection(databaseName, collectionName);
+            return await collection.DeleteOneAsync(CreateIdFilter(id));
+        }
+
+        private static BsonDocument CreateIdFilter(string id)
+        {
+            return new BsonDocument("_id", new BsonObjectId(new ObjectId(id)));
         }
     }
 }

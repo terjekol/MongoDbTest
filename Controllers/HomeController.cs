@@ -35,7 +35,7 @@ namespace MongoDbTest.Controllers
             int index
         )
         {
-            await _documentService.Delete(database, collection, id);
+            var delete = await _documentService.Delete(database, collection, id);
             return RedirectToAction("Index", GetRouteValues(database, collection, index));
         }
 
