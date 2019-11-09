@@ -57,14 +57,23 @@ namespace MongoDbTest.Services
         public void Remove(string id) =>
             _myDocuments.DeleteOne(book => book.Id == id);
             */
-        public async Task<List<BsonDocument>> GetRows(string databaseName, string collectionName)
+        public async Task<BsonDocument> GetRow(string databaseName, string collectionName, int index)
         {
             var db = _client.GetDatabase(databaseName);
             var collection = db.GetCollection<BsonDocument>(collectionName);
-            var list = new List<BsonDocument>();
-            var result = await collection.FindAsync(doc => true);
-            await result.ForEachAsync(doc => list.Add(doc));
-            return list;
+            BsonDocument document = null;
+            await collection.Find(doc => true)
+                .Skip(index)
+                .Limit(1)
+                .ForEachAsync(doc => document = doc);
+            return document;
+        }
+
+        public async Task<long> GetCollectionCount(string databaseName, string collectionName)
+        {
+            var db = _client.GetDatabase(databaseName);
+            var collection = db.GetCollection<BsonDocument>(collectionName);
+            return await collection.EstimatedDocumentCountAsync();
         }
     }
 }

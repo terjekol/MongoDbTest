@@ -1,9 +1,23 @@
-﻿@model ExplorerDbViewModel
+﻿@using MongoDB.Bson
+@model ExplorerDbViewModel
+<style>
+    tr:nth-child(even) {
+        background: rgba(64, 32, 0, 0.1);
+    }
+
+    span {
+        white-space: nowrap;
+    }
+
+    div {
+        margin-right: 10px;
+    }
+</style>
 <div style="display: flex">
     <div>
         @foreach (var databaseName in Model.DatabasesAndCollections.Keys)
         {
-            <span>Collections in database <b>@databaseName</b>:</span><br />
+            <span>Collections in <b>Db @databaseName</b>:</span><br />
             <ul>
                 @foreach (var collectionName in Model.DatabasesAndCollections[databaseName])
                 {
@@ -16,20 +30,27 @@
         }
     </div>
     <div>
-        @if (@Model.SelectedCollection == null)
+        @if (@Model.Collection == null)
         {
             <span style="color: green; font-style: italic">Select a collection in one of the databases to the left.</span>
         }
         else
         {
-            <span>You selected @Model.SelectedCollection in @Model.SelectedDatabase</span>
-            <table>
-                <
-            </table>
-            @foreach (var doc in Model.Documents)
+            <h3>You selected @Model.Collection in @Model.Database</h3>
+            <span>Showing row @Model.Index of @Model.CollectionCount</span>
+            @if (Model.Index > 0)
+            {
+                <a asp-route-selectedDatabase="@Model.Database"
+                   asp-route-selectedCollection="@Model.Collection"
+                   asp-route-index="@(Model.Index-1)">Previous</a>
+            }
+            @if (Model.Index < Model.CollectionCount - 1)
              {
-                 <li>@doc.ToString()</li>
+                 <a asp-route-selectedDatabase="@Model.Database"
+                    asp-route-selectedCollection="@Model.Collection"
+                    asp-route-index="@(Model.Index + 1)">Next</a>
              }
+            <partial name="_Document" model="Model.Document" />
         }
     </div>
 </div>

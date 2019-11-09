@@ -15,18 +15,20 @@ namespace MongoDbTest.Controllers
             _documentService = documentService;
         }
 
-        public async Task<IActionResult> Index(string selectedDatabase, string selectedCollection)
+        public async Task<IActionResult> Index(string selectedDatabase, string selectedCollection, int index = 0)
         {
             var databasesAndCollections = await _documentService.GetDatabasesAndCollections();
             var viewModel = new ExplorerDbViewModel()
             {
                 DatabasesAndCollections = databasesAndCollections,
-                SelectedDatabase = selectedDatabase,
-                SelectedCollection = selectedCollection
+                Database = selectedDatabase,
+                Collection = selectedCollection, 
+                Index = index
             };
             if (selectedCollection != null && selectedDatabase != null)
             {
-                viewModel.Documents = await _documentService.GetRows(selectedDatabase, selectedCollection);
+                viewModel.Document = await _documentService.GetRow(selectedDatabase, selectedCollection, index);
+                viewModel.CollectionCount = await _documentService.GetCollectionCount(selectedDatabase, selectedCollection);
             }
             return View(viewModel);
         }
