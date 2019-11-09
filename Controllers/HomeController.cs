@@ -15,6 +15,36 @@ namespace MongoDbTest.Controllers
             _documentService = documentService;
         }
 
+        public async Task<IActionResult> CreateOrUpdate(
+            string database,
+            string collection,
+            string id,
+            int index,
+            string fieldName,
+            string value
+        )
+        {
+            await _documentService.CreateOrUpdate(database, collection, id, fieldName, value);
+            return RedirectToAction("Index", GetRouteValues(database, collection, index));
+        }
+
+        public async Task<IActionResult> Delete(
+            string database,
+            string collection,
+            string id,
+            int index
+        )
+        {
+            await _documentService.Delete(database, collection, id);
+            return RedirectToAction("Index", GetRouteValues(database, collection, index));
+        }
+
+        private static object GetRouteValues(string database, string collection, int index)
+        {
+            return new { selectedDatabase = database, selectedCollection = collection, index = index };
+        }
+
+
         public async Task<IActionResult> Index(string selectedDatabase, string selectedCollection, int index = 0)
         {
             var databasesAndCollections = await _documentService.GetDatabasesAndCollections();
@@ -22,7 +52,7 @@ namespace MongoDbTest.Controllers
             {
                 DatabasesAndCollections = databasesAndCollections,
                 Database = selectedDatabase,
-                Collection = selectedCollection, 
+                Collection = selectedCollection,
                 Index = index
             };
             if (selectedCollection != null && selectedDatabase != null)

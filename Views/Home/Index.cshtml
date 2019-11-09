@@ -1,4 +1,5 @@
 ﻿@using MongoDB.Bson
+@using MongoDB.Bson
 @model ExplorerDbViewModel
 <style>
     tr:nth-child(even) {
@@ -32,12 +33,35 @@
     <div>
         @if (@Model.Collection == null)
         {
-            <span style="color: green; font-style: italic">Select a collection in one of the databases to the left.</span>
+            <span style="color: green; font-style: italic">Select a collectionName in one of the databaseNames to the left.</span>
         }
         else
         {
-            <h3>You selected @Model.Collection in @Model.Database</h3>
+            var id = Model.Document["_id"];
+            <h3>You selected <i>@Model.Collection</i> in <i>@Model.Database</i></h3>
             <span>Showing row @Model.Index of @Model.CollectionCount</span>
+
+
+            <form asp-action="CreateOrUpdate"
+                  asp-route-id="@id"
+                  asp-route-index="@Model.Index"
+                  asp-route-database="@Model.Database"
+                  asp-route-collection="@Model.Collection">
+                Field:<br />
+                <input type="text" name="fieldName" /><br />
+                Value:<br />
+                <input type="text" name="value" /><br />
+                <input type="submit" value="Change field value" />
+            </form>
+            <form asp-action="Delete" 
+                  asp-route-id="@id"
+                  asp-route-index="@Model.Index"
+                  asp-route-database="@Model.Database"
+                  asp-route-collection="@Model.Collection">
+                <input type="submit" value="Delete" />
+            </form>
+
+
             @if (Model.Index > 0)
             {
                 <a asp-route-selectedDatabase="@Model.Database"
@@ -45,11 +69,11 @@
                    asp-route-index="@(Model.Index-1)">Previous</a>
             }
             @if (Model.Index < Model.CollectionCount - 1)
-             {
-                 <a asp-route-selectedDatabase="@Model.Database"
-                    asp-route-selectedCollection="@Model.Collection"
-                    asp-route-index="@(Model.Index + 1)">Next</a>
-             }
+            {
+                <a asp-route-selectedDatabase="@Model.Database"
+                   asp-route-selectedCollection="@Model.Collection"
+                   asp-route-index="@(Model.Index + 1)">Next</a>
+            }
             <partial name="_Document" model="Model.Document" />
         }
     </div>

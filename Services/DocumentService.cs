@@ -71,9 +71,25 @@ namespace MongoDbTest.Services
 
         public async Task<long> GetCollectionCount(string databaseName, string collectionName)
         {
-            var db = _client.GetDatabase(databaseName);
-            var collection = db.GetCollection<BsonDocument>(collectionName);
+            var collection = GetCollection(databaseName, collectionName);
             return await collection.EstimatedDocumentCountAsync();
+        }
+
+        private IMongoCollection<BsonDocument> GetCollection(string databaseName, string collectionName)
+        {
+            var db = _client.GetDatabase(databaseName);
+            return db.GetCollection<BsonDocument>(collectionName);
+        }
+
+        public async Task CreateOrUpdate(string database, string collection, string id, string fieldName, string value)
+        {
+            
+        }
+
+        public async Task Delete(string databaseName, string collectionName, string id)
+        {
+            var collection = GetCollection(databaseName, collectionName);
+            await collection.DeleteOneAsync(doc => doc["_id"] == id);
         }
     }
 }
