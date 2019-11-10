@@ -99,6 +99,12 @@ namespace MongoDbTest.Services
         {
             return new BsonDocument("_id", new BsonObjectId(new ObjectId(id)));
         }
+
+        public async Task Create(string databaseName, string collectionName)
+        {
+            var collection = GetCollection(databaseName, collectionName);
+            await collection.InsertOneAsync(new BsonDocument());
+        }
     }
 }
 

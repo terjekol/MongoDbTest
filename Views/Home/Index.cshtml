@@ -40,28 +40,6 @@
             var id = Model.Document["_id"];
             <h3>You selected <i>@Model.Collection</i> in <i>@Model.Database</i></h3>
             <span>Showing row @Model.Index of @Model.CollectionCount</span>
-
-
-            <form asp-action="CreateOrUpdate"
-                  asp-route-id="@id"
-                  asp-route-index="@Model.Index"
-                  asp-route-database="@Model.Database"
-                  asp-route-collection="@Model.Collection">
-                Field:<br />
-                <input type="text" name="fieldName" /><br />
-                Value:<br />
-                <input type="text" name="value" /><br />
-                <input type="submit" value="Change field value" />
-            </form>
-            <form asp-action="Delete" 
-                  asp-route-id="@id"
-                  asp-route-index="@Model.Index"
-                  asp-route-database="@Model.Database"
-                  asp-route-collection="@Model.Collection">
-                <input type="submit" value="Delete" />
-            </form>
-
-
             @if (Model.Index > 0)
             {
                 <a asp-route-selectedDatabase="@Model.Database"
@@ -74,6 +52,40 @@
                    asp-route-selectedCollection="@Model.Collection"
                    asp-route-index="@(Model.Index + 1)">Next</a>
             }
+            <hr />
+            <div style="display: flex; justify-content: space-between">
+                <div>
+                    <form asp-action="CreateOrUpdate"
+                          asp-route-id="@id"
+                          asp-route-index="@Model.Index"
+                          asp-route-database="@Model.Database"
+                          asp-route-collection="@Model.Collection">
+                        Field:<br />
+                        <input type="text" name="fieldName" style="width: 200px" /><br />
+                        Value:<br />
+                        <input type="text" name="value" style="width: 200px" /><br />
+                        <input type="submit" value="Change field value" style="width: 200px; margin-top: 4px" />
+                    </form>
+                </div>
+                <div>
+                    <form asp-action="DeleteDoc"
+                          asp-route-id="@id"
+                          asp-route-index="@Model.Index"
+                          asp-route-database="@Model.Database"
+                          asp-route-collection="@Model.Collection">
+                        <input type="submit" value="Delete Document" style="width: 200px" />
+                    </form>
+                    <form asp-action="CreateDoc"
+                          asp-route-id="@id"
+                          asp-route-index="@Model.Index"
+                          asp-route-database="@Model.Database"
+                          asp-route-collection="@Model.Collection">
+                        <input type="submit" value="Create New Document" style="width: 200px;  margin-top: 4px" />
+                    </form>
+                </div>
+            </div>
+            <hr />
+            <h4>Document</h4>
             <partial name="_Document" model="Model.Document" />
         }
     </div>

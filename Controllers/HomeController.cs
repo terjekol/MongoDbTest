@@ -28,7 +28,7 @@ namespace MongoDbTest.Controllers
             return RedirectToAction("Index", GetRouteValues(database, collection, index));
         }
 
-        public async Task<IActionResult> Delete(
+        public async Task<IActionResult> DeleteDoc(
             string database,
             string collection,
             string id,
@@ -39,7 +39,17 @@ namespace MongoDbTest.Controllers
             return RedirectToAction("Index", GetRouteValues(database, collection, index));
         }
 
-        private static object GetRouteValues(string database, string collection, int index)
+        public async Task<IActionResult> CreateDoc(
+            string database,
+            string collection
+        )
+        {
+            await _documentService.Create(database, collection);
+            var count = await _documentService.GetCollectionCount(database, collection);
+            return RedirectToAction("Index", GetRouteValues(database, collection, count-1));
+        }
+
+        private static object GetRouteValues(string database, string collection, long index)
         {
             return new { selectedDatabase = database, selectedCollection = collection, index = index };
         }
